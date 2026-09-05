@@ -1,0 +1,19 @@
+{
+  "name": "شایان شاپ",
+  "short_name": "شایان شاپ",
+  "description": "فروشگاه آنلاین پوشاک شایان شاپ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5f7",
+  "theme_color": "#d81e3f",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "fa",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
