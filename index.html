@@ -4,14 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>شایان شاپ</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#d81e3f">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="شایان شاپ">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -404,35 +396,12 @@
     { id:'trend', name:'ترند', icon:'🔥' },
   ];
 
-  const SEED_NAMES = {
-    tshirt: ['تیشرت ساده سفید','تیشرت طرح‌دار اورسایز','تیشرت یقه گرد مشکی','تیشرت آستین بلند طرح‌دار'],
-    hoodie: ['هودی زیپ‌دار مشکی','هودی اورسایز طوسی','هودی کلاه‌دار قرمز','هودی طرح‌دار یونیسکس'],
-    winter: ['کاپشن پفی زمستانه','پالتو پشمی مردانه','ژاکت بافت گرم','شال و کلاه ست زمستانه'],
-    pants: ['شلوار جین کلاسیک','شلوار کارگو مشکی','شلوار اسلیم طوسی','شلوار گرمکن اسپرت'],
-    trend: ['ست ترند پاییزه','کاپشن بمبر ترندی','هودی کالکشن جدید','شلوار کارگو ترند'],
-  };
+  // آدرس تصویری که وقتی ادمین برای یک آگهی عکسی انتخاب نکند، به‌جای آن نمایش داده می‌شود
+  const DEFAULT_PRODUCT_IMG = "icon-512.png";
 
-  function seedRand(seed){ let s = seed; return function(){ s = (s*9301+49297)%233280; return s/233280; }; }
-
+  // فروشگاه از حالت خالی شروع می‌شود — فقط آگهی‌هایی که از پنل مدیریت اضافه می‌شوند نمایش داده می‌شوند
   const products = [];
   let pid = 1;
-  Object.keys(SEED_NAMES).forEach(cat=>{
-    SEED_NAMES[cat].forEach(name=>{
-      const r = seedRand(pid*17+3);
-      const base = Math.round((180000 + r()*1200000)/1000)*1000;
-      const hasDiscount = r() > 0.45;
-      const discountPct = hasDiscount ? (5 + Math.floor(r()*40)) : 0;
-      const finalPrice = hasDiscount ? Math.round(base*(1-discountPct/100)/1000)*1000 : base;
-      products.push({
-        id: pid, name, cat,
-        price: finalPrice, oldPrice: hasDiscount ? base : null, discount: discountPct,
-        img: `https://picsum.photos/seed/shayan${pid}/500/500`,
-        desc: `${name} با پارچه باکیفیت و دوخت مقاوم، مناسب استفاده روزمره. ارسال به سراسر کشور.`,
-        mine:false,
-      });
-      pid++;
-    });
-  });
 
   // ============ STATE ============
   let user = { phone:'', name:'', nid:'', postal:'', addr:'' };
@@ -559,8 +528,11 @@
     }
     $('listTitle').textContent = activeCat==='all' ? 'محصولات' : CATS.find(c=>c.id===activeCat).name;
     $('listCount').textContent = `${fmt(list.length)} کالا`;
+    const emptyMsg = products.length === 0
+      ? 'هنوز آگهی‌ای اضافه نشده — از پروفایل، پنل مدیریت رو باز کن و اولین محصول رو اضافه کن 🛍️'
+      : 'کالایی یافت نشد';
     $('productsGrid').innerHTML = list.length ? list.map(cardHTML).join('') :
-      `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft);font-size:13px;">کالایی یافت نشد</div>`;
+      `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft);font-size:13px;">${emptyMsg}</div>`;
   }
   function renderAll(){ renderCats(); renderProducts(); }
 
@@ -677,7 +649,7 @@
       price: discount ? Math.round(price*(1-discount/100)/1000)*1000 : price,
       oldPrice: discount ? price : null,
       discount,
-      img: imgUrl || `https://picsum.photos/seed/shayan${pid}/500/500`,
+      img: imgUrl || DEFAULT_PRODUCT_IMG,
       desc: desc || `${title} — محصول جدید فروشگاه شایان شاپ.`,
       mine:true,
     };
@@ -756,12 +728,6 @@
   });
 
   $('searchInput').addEventListener('input', (e)=>{ searchTerm = e.target.value; renderProducts(); });
-
-  if('serviceWorker' in navigator){
-    window.addEventListener('load', ()=>{
-      navigator.serviceWorker.register('service-worker.js').catch(()=>{});
-    });
-  }
 
 })();
 </script>
